@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Settings, Loader2, Save, Lock, Eye, EyeOff, Globe, UserCog,
+  Loader2, Save, Lock, Eye, EyeOff, Globe, UserCog,
   ShieldCheck, CheckCircle2, AlertCircle,
 } from 'lucide-react';
 import { settingsService } from '@/services/settings.service';

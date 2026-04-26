@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Bell, LogOut, User, ChevronDown, FolderKanban, Check, CheckCheck, Loader2, AlertTriangle } from 'lucide-react';
+import { Menu, Bell, LogOut, User, ChevronDown, FolderKanban, Check, CheckCheck, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { notificationService } from '@/services/notification.service';
 import type { Notification } from '@/types';
