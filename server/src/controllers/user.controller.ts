@@ -22,7 +22,8 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await userService.getUserById(req.params.id);
+    const id = req.params.id as string;
+    const user = await userService.getUserById(id);
     res.status(200).json({ data: user });
   } catch (error) {
     next(error);
@@ -49,13 +50,14 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await userService.updateUser(req.params.id, req.body);
+    const id = req.params.id as string;
+    const user = await userService.updateUser(id, req.body);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Updated user',
       entityType: 'user',
-      entityId: req.params.id,
+      entityId: id,
       metadata: { email: user.email },
     }).catch(() => {});
 
@@ -67,13 +69,14 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 
 export const deactivateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await userService.deactivateUser(req.params.id);
+    const id = req.params.id as string;
+    await userService.deactivateUser(id);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Deactivated user',
       entityType: 'user',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
     res.status(200).json({ message: 'User deactivated successfully' });
@@ -84,14 +87,16 @@ export const deactivateUser = async (req: Request, res: Response, next: NextFunc
 
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id = req.params.id as string;
+
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Deleted user',
       entityType: 'user',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
-    await userService.deleteUser(req.params.id);
+    await userService.deleteUser(id);
 
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {

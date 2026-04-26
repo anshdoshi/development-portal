@@ -21,7 +21,8 @@ export const getClients = async (req: Request, res: Response, next: NextFunction
 
 export const getClientById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const client = await clientService.getClientById(req.params.id);
+    const id = req.params.id as string;
+    const client = await clientService.getClientById(id);
     res.status(200).json({ data: client });
   } catch (error) {
     next(error);
@@ -48,13 +49,14 @@ export const createClient = async (req: Request, res: Response, next: NextFuncti
 
 export const updateClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const client = await clientService.updateClient(req.params.id, req.body);
+    const id = req.params.id as string;
+    const client = await clientService.updateClient(id, req.body);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Updated client',
       entityType: 'client',
-      entityId: req.params.id,
+      entityId: id,
       metadata: { email: client.email },
     }).catch(() => {});
 
@@ -66,13 +68,14 @@ export const updateClient = async (req: Request, res: Response, next: NextFuncti
 
 export const deactivateClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await clientService.deactivateClient(req.params.id);
+    const id = req.params.id as string;
+    await clientService.deactivateClient(id);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Deactivated client',
       entityType: 'client',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
     res.status(200).json({ message: 'Client deactivated successfully' });
@@ -83,14 +86,16 @@ export const deactivateClient = async (req: Request, res: Response, next: NextFu
 
 export const deleteClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id = req.params.id as string;
+
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Deleted client',
       entityType: 'client',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
-    await clientService.deleteClient(req.params.id);
+    await clientService.deleteClient(id);
 
     res.status(200).json({ message: 'Client deleted successfully' });
   } catch (error) {

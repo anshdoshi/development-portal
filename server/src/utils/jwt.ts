@@ -9,8 +9,8 @@ interface TokenPayload {
 
 export function signToken(payload: TokenPayload): string {
   return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES_IN,
-  });
+    expiresIn: env.JWT_EXPIRES_IN as string,
+  } as jwt.SignOptions);
 }
 
 export function verifyToken(token: string): TokenPayload {

@@ -41,7 +41,8 @@ export const getProjects = async (req: Request, res: Response, next: NextFunctio
 export const getProjectById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user!;
-    const project = await projectService.getProjectById(req.params.id);
+    const id = req.params.id as string;
+    const project = await projectService.getProjectById(id);
 
     // Clients can only view their own projects
     if (user.role === 'client' && project.client_id !== user.id) {
@@ -85,10 +86,11 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
 export const updateProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user!;
+    const id = req.params.id as string;
 
     // Clients can only update status on their own projects
     if (user.role === 'client') {
-      const existing = await projectService.getProjectById(req.params.id);
+      const existing = await projectService.getProjectById(id);
       if (existing.client_id !== user.id) {
         res.status(403).json({ status: 'fail', message: 'You can only update your own projects.' });
         return;
@@ -97,13 +99,13 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
       req.body = { status: req.body.status };
     }
 
-    const project = await projectService.updateProject(req.params.id, req.body);
+    const project = await projectService.updateProject(id, req.body);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Updated project',
       entityType: 'project',
-      entityId: req.params.id,
+      entityId: id,
       metadata: { title: project.title },
     }).catch(() => {});
 
@@ -115,13 +117,14 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
 
 export const deleteProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await projectService.deleteProject(req.params.id);
+    const id = req.params.id as string;
+    await projectService.deleteProject(id);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Deleted project',
       entityType: 'project',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
     res.status(200).json({ message: 'Project deleted successfully' });
@@ -132,13 +135,14 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
 
 export const assignUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await projectService.assignUser(req.params.id, req.body.userId);
+    const id = req.params.id as string;
+    const result = await projectService.assignUser(id, req.body.userId);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Assigned user to project',
       entityType: 'project',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
     res.status(200).json({ data: result });
@@ -149,13 +153,15 @@ export const assignUser = async (req: Request, res: Response, next: NextFunction
 
 export const unassignUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await projectService.unassignUser(req.params.id, req.params.userId);
+    const id = req.params.id as string;
+    const userId = req.params.userId as string;
+    await projectService.unassignUser(id, userId);
 
     await activityService.logActivity({
       userId: req.user!.id,
       action: 'Unassigned user from project',
       entityType: 'project',
-      entityId: req.params.id,
+      entityId: id,
     }).catch(() => {});
 
     res.status(200).json({ message: 'User unassigned successfully' });
