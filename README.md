@@ -72,14 +72,14 @@ development-portal/
 
 3. Set up environment variables:
 
-   **Client** (`client/.env.local`):
+   **Client** (`client/.env`):
    ```
    VITE_API_URL=http://localhost:5001/api
    VITE_SUPABASE_URL=<your-supabase-url>
    VITE_SUPABASE_ANON_KEY=<your-supabase-anon-key>
    ```
 
-   **Server** (`server/.env.local`):
+   **Server** (`server/.env`):
    ```
    PORT=5001
    CLIENT_URL=http://localhost:5173
