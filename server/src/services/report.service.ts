@@ -1,6 +1,11 @@
 import supabase from '../config/supabase.js';
 import AppError from '../utils/AppError.js';
 
+// Append end-of-day time so the filter includes the entire end date
+function endOfDay(dateStr: string): string {
+  return `${dateStr}T23:59:59.999Z`;
+}
+
 export async function getReportData(params: {
   type?: 'projects' | 'users' | 'activity';
   startDate?: string;
@@ -17,7 +22,7 @@ export async function getReportData(params: {
       query = query.gte('created_at', params.startDate);
     }
     if (params.endDate) {
-      query = query.lte('created_at', params.endDate);
+      query = query.lte('created_at', endOfDay(params.endDate));
     }
 
     query = query.order('created_at', { ascending: false });
@@ -36,7 +41,7 @@ export async function getReportData(params: {
       query = query.gte('created_at', params.startDate);
     }
     if (params.endDate) {
-      query = query.lte('created_at', params.endDate);
+      query = query.lte('created_at', endOfDay(params.endDate));
     }
 
     query = query.order('created_at', { ascending: false });
@@ -55,7 +60,7 @@ export async function getReportData(params: {
       query = query.gte('created_at', params.startDate);
     }
     if (params.endDate) {
-      query = query.lte('created_at', params.endDate);
+      query = query.lte('created_at', endOfDay(params.endDate));
     }
 
     query = query.order('created_at', { ascending: false });

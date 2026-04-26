@@ -55,9 +55,11 @@ export default function ClientProjects() {
       // Update the selected project locally
       setSelectedProject((prev) => prev ? { ...prev, status: newStatus as Project['status'] } : null);
       toast('Project status updated successfully.');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to update status:', err);
-      toast('Failed to update project status.', 'error');
+      const axiosErr = err as { response?: { data?: { message?: string }; status?: number }; message?: string };
+      const msg = axiosErr.response?.data?.message || axiosErr.message || 'Failed to update project status.';
+      toast(msg, 'error');
     } finally {
       setUpdatingStatus(false);
     }
